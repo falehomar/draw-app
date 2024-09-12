@@ -1,0 +1,9 @@
+<div>
+  ( {{cursorX}}, {{cursorX}} )
+</div>
+<canvas #canvas [width]="width"
+        [height]="height"
+        (mousedown)="nMouseDown($event)"
+        (mousemove)="onnMouseMove($event)"
+        (mouseup)="onMouseUp($event)"
+></canvas>
