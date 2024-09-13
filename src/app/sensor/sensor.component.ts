@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {DecimalPipe} from "@angular/common";
 import * as THREE from "three";
 import {GLTF, GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
+import {Quaternion} from "three";
 
 interface SensorErrorEvent extends Event {
   error: DOMException;
@@ -183,10 +184,13 @@ export class SensorComponent implements OnInit {
 
 
     renderer.setAnimationLoop(() => {
+      //let objectByName = scene.getObjectByName("Octahedron");
+      //objectByName?.applyQuaternion(objectByName.quaternion.random());
 
       if (this.rotation) {
-        console.log(this.rotation)
-        scene.getObjectByName("Octahedron")?.applyQuaternion(new THREE.Quaternion(this.rotation.x, this.rotation.y, this.rotation.z).invert());
+        console.log("AnimationLoop:"+this.rotation)
+        let octahedron = scene.getObjectByName("Octahedron");
+        octahedron?.applyQuaternion(octahedron.quaternion.set(this.rotation.x,this.rotation.y,this.rotation.z,octahedron.quaternion.w).invert());
         //camera.applyQuaternion(camera.quaternion.random())
 
       }
@@ -209,7 +213,7 @@ export class SensorComponent implements OnInit {
       this.absoluteOrientationSensor.addEventListener("reading", () => {
 
         this.rotation = this.absoluteOrientationSensor?.quaternion
-        console.log(this.rotation)
+        console.log("reading:"+this.rotation)
       })
       this.absoluteOrientationSensor.addEventListener("error", () => {
         console.error("absoluteOrientationSensor: Error occurred.");
