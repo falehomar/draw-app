@@ -183,7 +183,9 @@ export class SensorComponent implements OnInit {
 
 
     renderer.setAnimationLoop(() => {
+
       if (this.rotation) {
+        console.log(this.rotation)
         scene.applyQuaternion(new THREE.Quaternion(this.rotation.x, this.rotation.y, this.rotation.z).invert());
 
       }
@@ -204,7 +206,12 @@ export class SensorComponent implements OnInit {
       }
       this.absoluteOrientationSensor = new AbsoluteOrientationSensor({frequency: 60})
       this.absoluteOrientationSensor.addEventListener("reading", () => {
+
         this.rotation = this.absoluteOrientationSensor?.quaternion
+        console.log(this.rotation)
+      })
+      this.absoluteOrientationSensor.addEventListener("error", () => {
+        console.error("absoluteOrientationSensor: Error occurred.");
       })
 
       this.absoluteOrientationSensor.start()
