@@ -173,8 +173,22 @@ export class SensorComponent implements OnInit {
 
     const loader = new GLTFLoader();
 
-    loader.load('scene.gltf', function (gltf: GLTF) {
+    loader.load('scene.gltf',  (gltf: GLTF)=> {
       scene.add(gltf.scene);
+
+
+      renderer.setAnimationLoop(() => {
+
+
+        if (this.absoluteOrientationSensor) {
+          //let octahedron = scene.getObjectByName("Octahedron");
+          console.log(this.absoluteOrientationSensor?.quaternion)
+          //octahedron?.quaternion.fromArray(this.absoluteOrientationSensor?.quaternion).invert();
+          // @ts-ignore
+          gltf.scene.rotation.fromArray(this.absoluteOrientationSensor?.quaternion).invert();
+        }
+        renderer.render(scene, camera);
+      });
 
     }, undefined, function (error: unknown) {
 
@@ -183,17 +197,6 @@ export class SensorComponent implements OnInit {
     });
 
 
-    renderer.setAnimationLoop(() => {
-
-
-      if (this.absoluteOrientationSensor) {
-        let octahedron = scene.getObjectByName("Octahedron");
-        // @ts-ignore
-        octahedron?.quaternion.fromArray(this.absoluteOrientationSensor?.quaternion).invert();
-
-      }
-      renderer.render(scene, camera);
-    });
 
     Promise.all([
       // @ts-ignore
