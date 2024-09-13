@@ -209,7 +209,7 @@ export class SensorComponent implements OnInit {
             console.log(q)
             //octahedron?.quaternion.fromArray(this.absoluteOrientationSensor?.quaternion).invert();
             // @ts-ignore
-            gltf.scene.rotation.fromArray(q).invert();
+            gltf.scene.quaternion.fromArray(q).invert();
           }
           renderer.render(scene, camera);
         });
