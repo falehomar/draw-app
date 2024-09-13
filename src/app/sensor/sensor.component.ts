@@ -186,7 +186,8 @@ export class SensorComponent implements OnInit {
 
       if (this.rotation) {
         console.log(this.rotation)
-        scene.applyQuaternion(new THREE.Quaternion(this.rotation.x, this.rotation.y, this.rotation.z).invert());
+        //scene.applyQuaternion(new THREE.Quaternion(this.rotation.x, this.rotation.y, this.rotation.z).invert());
+        camera.applyQuaternion(camera.quaternion.random())
 
       }
       renderer.render(scene, camera);
