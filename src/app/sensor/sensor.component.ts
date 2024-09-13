@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {DecimalPipe} from "@angular/common";
 
 
 interface Sensor {
@@ -23,7 +24,9 @@ interface SensorOptions {
 @Component({
   selector: 'app-sensor',
   standalone: true,
-  imports: [],
+  imports: [
+    DecimalPipe
+  ],
   templateUrl: './sensor.component.html',
   styleUrl: './sensor.component.sass'
 })
@@ -51,7 +54,11 @@ export class SensorComponent implements OnInit{
         if (this.accelerometer) {
           this.acceleration = Math.hypot(this.accelerometer?.x, this.accelerometer?.y,this.accelerometer?.z);
 
-          this.velocity = [this.accelerometer?.x, this.accelerometer?.y,this.accelerometer?.z]
+          // v = u + at
+          this.velocity = [this.t0[0]+this.accelerometer?.x/60,
+            this.t0[1]+this.accelerometer?.y/60,
+            this.t0[2]+this.accelerometer?.z/60,
+          ]
 
           this.t0 = [this.accelerometer?.x, this.accelerometer?.y,this.accelerometer?.z]
 
