@@ -184,14 +184,12 @@ export class SensorComponent implements OnInit {
 
 
     renderer.setAnimationLoop(() => {
-      //let objectByName = scene.getObjectByName("Octahedron");
-      //objectByName?.applyQuaternion(objectByName.quaternion.random());
 
-      if (this.rotation) {
-        console.log("AnimationLoop:"+this.rotation)
+
+      if (this.absoluteOrientationSensor) {
         let octahedron = scene.getObjectByName("Octahedron");
-        octahedron?.applyQuaternion(octahedron.quaternion.set(this.rotation.x,this.rotation.y,this.rotation.z,octahedron.quaternion.w).invert());
-        //camera.applyQuaternion(camera.quaternion.random())
+        // @ts-ignore
+        octahedron?.quaternion.fromArray(this.absoluteOrientationSensor?.quaternion).invert();
 
       }
       renderer.render(scene, camera);
