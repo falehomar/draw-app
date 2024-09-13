@@ -1,23 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
-interface Sensor {
-  start():void
-}
-interface Accelerometer extends EventTarget, Sensor{
-  new(options?: SensorOptions): Accelerometer;
-  x: number;
-  y: number;
-  z: number;
-}
-
-declare var Accelerometer : {
-  prototype: Accelerometer
-  new(options?: SensorOptions): Accelerometer
-}
-
-interface SensorOptions {
-  frequency: number;
-}
 
 @Component({
   selector: 'app-canvas',
@@ -26,7 +8,7 @@ interface SensorOptions {
   templateUrl: './canvas.component.html',
   styleUrl: './canvas.component.sass'
 })
-export class CanvasComponent implements OnInit{
+export class CanvasComponent {
 
   width: number = 900;
   height: number = 900;
@@ -38,24 +20,7 @@ export class CanvasComponent implements OnInit{
 
   pathDrawing: boolean = false;
 
-  accelerometer?: Accelerometer;
 
-  ngOnInit(): void {
-
-    // @ts-ignore
-    navigator.permissions.query({ name: "accelerometer" }).then((result) => {
-      if (result.state === "denied") {
-        console.log("Permission to use accelerometer sensor is denied.");
-        return;
-      }
-      // Use the sensor.
-      this.accelerometer = new Accelerometer({frequency:60})
-      this.accelerometer.addEventListener("reading",() => {
-        console.log("Accelerometer reading",this.accelerometer?.x,this.accelerometer?.y,this.accelerometer?.z);
-      })
-      this.accelerometer.start()
-    });
-  }
 
 
   nMouseDown($event: Event) {
