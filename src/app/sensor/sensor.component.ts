@@ -163,38 +163,7 @@ export class SensorComponent implements OnInit {
 
   ngOnInit(): void {
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-    camera.position.z = 5;
-
-    const loader = new GLTFLoader();
-
-    loader.load('scene.gltf',  (gltf: GLTF)=> {
-      scene.add(gltf.scene);
-
-
-      renderer.setAnimationLoop(() => {
-
-
-        if (this.absoluteOrientationSensor) {
-          //let octahedron = scene.getObjectByName("Octahedron");
-          console.log(this.absoluteOrientationSensor?.quaternion)
-          //octahedron?.quaternion.fromArray(this.absoluteOrientationSensor?.quaternion).invert();
-          // @ts-ignore
-          gltf.scene.rotation.fromArray(this.absoluteOrientationSensor?.quaternion).invert();
-        }
-        renderer.render(scene, camera);
-      });
-
-    }, undefined, function (error: unknown) {
-
-      console.error(error);
-
-    });
 
 
 
@@ -220,29 +189,67 @@ export class SensorComponent implements OnInit {
         console.error("absoluteOrientationSensor: Error occurred.");
       })
 
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      camera.position.z = 5;
+
+      const loader = new GLTFLoader();
+
+      loader.load('scene.gltf',  (gltf: GLTF)=> {
+        scene.add(gltf.scene);
+
+        renderer.setAnimationLoop(() => {
+          let q = this.absoluteOrientationSensor?.quaternion
+          if (q) {
+            //let octahedron = scene.getObjectByName("Octahedron");
+            console.log(q)
+            //octahedron?.quaternion.fromArray(this.absoluteOrientationSensor?.quaternion).invert();
+            // @ts-ignore
+            gltf.scene.rotation.fromArray(q).invert();
+          }
+          renderer.render(scene, camera);
+        });
+
+      }, undefined, function (error: unknown) {
+
+        console.error(error);
+
+      });
+
+
       this.absoluteOrientationSensor.start()
-      // Use the sensor.
-      this.accelerometer = new Accelerometer({frequency: 60})
-      this.accelerometer.addEventListener("reading", () => {
-        if (this.accelerometer) {
-          this.acceleration = Math.hypot(this.accelerometer?.x, this.accelerometer?.y, this.accelerometer?.z);
 
-          this.timestamp = this.accelerometer.timestamp
-          this.hasReading = this.accelerometer.hasReading
-          this.activated = this.accelerometer.activated
-          // v = u + at
-          this.velocity = [this.t0[0] + this.accelerometer?.x / 60,
-            this.t0[1] + this.accelerometer?.y / 60,
-            this.t0[2] + this.accelerometer?.z / 60,
-          ]
 
-          this.t0 = [this.accelerometer?.x, this.accelerometer?.y, this.accelerometer?.z]
 
-        }
-
-      })
-      this.accelerometer.start()
     });
 
+  }
+
+  private extracted() {
+    // Use the sensor.
+    this.accelerometer = new Accelerometer({frequency: 60})
+    this.accelerometer.addEventListener("reading", () => {
+      if (this.accelerometer) {
+        this.acceleration = Math.hypot(this.accelerometer?.x, this.accelerometer?.y, this.accelerometer?.z);
+
+        this.timestamp = this.accelerometer.timestamp
+        this.hasReading = this.accelerometer.hasReading
+        this.activated = this.accelerometer.activated
+        // v = u + at
+        this.velocity = [this.t0[0] + this.accelerometer?.x / 60,
+          this.t0[1] + this.accelerometer?.y / 60,
+          this.t0[2] + this.accelerometer?.z / 60,
+        ]
+
+        this.t0 = [this.accelerometer?.x, this.accelerometer?.y, this.accelerometer?.z]
+
+      }
+
+    })
+    this.accelerometer.start()
   }
 }
